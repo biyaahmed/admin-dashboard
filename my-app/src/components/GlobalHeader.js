@@ -18,7 +18,7 @@ const GlobalHeader = () => {
   const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: 'fas fa-chart-bar', current: location.pathname === '/dashboard' },
     { name: 'Orders', href: '/orders', icon: 'fas fa-shopping-cart', current: location.pathname === '/orders' },
-    { name: 'Statistics', href: '/stats', icon: 'fas fa-chart-pie', current: location.pathname === '/stats' },
+    // { name: 'Statistics', href: '/stats', icon: 'fas fa-chart-pie', current: location.pathname === '/stats' },
   ];
 
   const handleLogout = () => {
@@ -28,7 +28,7 @@ const GlobalHeader = () => {
   };
 
   return (
-    <header className="bg-white shadow-sm border-b border-orange-200 sticky top-0 z-50">
+    <header className="bg-white  border-b  sticky top-0 z-50" style={{borderBottom:"1px solid #2e2163"}}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo and Navigation */}
@@ -45,13 +45,13 @@ const GlobalHeader = () => {
             {/* Desktop Navigation */}
             <nav className="hidden md:flex space-x-1">
               {navigation.map((item) => (
-                <button
+                <button style={{backgroundColor:"#2e2163", color:"white"}}
                   key={item.name}
                   onClick={() => navigate(item.href)}
                   className={`${
                     item.current
-                      ? 'bg-orange-500 text-white shadow-lg'
-                      : 'text-gray-700 hover:bg-orange-50 hover:text-orange-700'
+                      ? ' text-white shadow-lg'
+                      : 'text-gray-700 hover:bg-orange-50 hover:text-white-700'
                   } px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300 flex items-center gap-2`}
                 >
                   <i className={`${item.icon} w-4 h-4`}></i>
@@ -64,8 +64,8 @@ const GlobalHeader = () => {
           {/* Right side */}
           <div className="flex items-center gap-4">
             {/* Phone info */}
-            <div className="hidden lg:flex items-center gap-2 text-gray-600 bg-orange-50 px-4 py-2 rounded-full border border-orange-200">
-              <i className="fas fa-phone text-orange-500 text-sm"></i>
+            <div className="hidden lg:flex items-center gap-2 text-gray-600 px-4 py-2 rounded-full" style={{border:"1px solid #281d58"}}>
+              <i className="fas fa-phone text-sm" style={{color:"#281d58"}}></i>
               <span className="text-sm font-medium">+18172429273</span>
             </div>
 
@@ -73,7 +73,7 @@ const GlobalHeader = () => {
             <div className="relative">
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="flex items-center gap-3 bg-white rounded-2xl px-4 py-2 hover:bg-orange-50 transition-all duration-300 border border-orange-200"
+                className="flex items-center gap-3 bg-white rounded-2xl px-4 py-2" style={{border:"1px solid #271c54"}}
               >
                 <img
                   className="h-9 w-9 rounded-full border-2 border-orange-200"
@@ -84,7 +84,7 @@ const GlobalHeader = () => {
                   <p className="text-sm font-semibold text-gray-900">{admin.name}</p>
                   <p className="text-xs text-gray-500">{admin.email}</p>
                 </div>
-                <i className="fas fa-chevron-down text-orange-500 text-xs"></i>
+                <i className="fas fa-chevron-down text-xs" style={{color:"#271c54"}}></i>
               </button>
 
               {isDropdownOpen && (

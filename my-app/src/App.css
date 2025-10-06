@@ -37,7 +37,9 @@
   }
 }
 
-
+body{
+  background-color: #ebecf0 !important;
+}
 /* App.css */
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';

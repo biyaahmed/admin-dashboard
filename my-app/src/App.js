@@ -5,7 +5,7 @@ import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import Orders from './pages/Orders';
 import OrderDetails from './pages/OrderDetails';
-import Stats from './pages/Stats';
+// import Stats from './pages/Stats';
 import Layout from './components/Layout';
 import './App.css';
 
@@ -55,7 +55,7 @@ function App() {
               </ProtectedRoute>
             } 
           />
-          <Route 
+          {/* <Route 
             path="/stats" 
             element={
               <ProtectedRoute>
@@ -64,7 +64,7 @@ function App() {
                 </Layout>
               </ProtectedRoute>
             } 
-          />
+          /> */}
           <Route path="/" element={<Navigate to={isAuthenticated() ? "/dashboard" : "/login"} />} />
         </Routes>
       </div>
