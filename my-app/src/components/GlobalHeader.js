@@ -8,9 +8,10 @@ const GlobalHeader = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const adminData = JSON.parse(localStorage.getItem('adminData') || '{}');
   const admin = {
-    name: 'Admin User',
-    email: 'admin@example.com',
+    name: adminData.name || 'Admin User',
+    email: adminData.email || 'admin@example.com',
     avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face'
   };
 

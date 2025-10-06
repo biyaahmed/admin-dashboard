@@ -1,18 +1,15 @@
 // pages/Orders.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getAdminOrders } from '../api';
 
 const Orders = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-
-  const orders = [
-    { id: 1, orderId: '#ORD-001', customer: 'John Doe', email: 'john@example.com', amount: '$120.00', status: 'completed', date: '2024-01-15', items: ['Sourdough', 'Baguette'] },
-    { id: 2, orderId: '#ORD-002', customer: 'Jane Smith', email: 'jane@example.com', amount: '$89.50', status: 'processing', date: '2024-01-15', items: ['Croissant'] },
-    { id: 3, orderId: '#ORD-003', customer: 'Mike Johnson', email: 'mike@example.com', amount: '$245.75', status: 'completed', date: '2024-01-14', items: ['Sourdough', 'Baguette', 'Cinnamon Roll'] },
-    { id: 4, orderId: '#ORD-004', customer: 'Sarah Wilson', email: 'sarah@example.com', amount: '$67.25', status: 'pending', date: '2024-01-14', items: ['Baguette'] }
-  ];
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   const getStatusColor = (status) => {
     const colors = {
@@ -24,12 +21,52 @@ const Orders = () => {
     return colors[status] || 'bg-gray-100 text-gray-800 border-gray-200';
   };
 
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        setLoading(true);
+        const data = await getAdminOrders();
+        setOrders(data.data); // Use data.data array from API response
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, []);
+
   const filteredOrders = orders.filter(order => {
-    const matchesSearch = order.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         order.orderId.toLowerCase().includes(searchTerm.toLowerCase());
+    const customerName = order.form_data?.contact?.firstName + ' ' + order.form_data?.contact?.lastName || '';
+    const orderNumber = order.order_number || '';
+    const matchesSearch = customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         orderNumber.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <i className="fas fa-spinner fa-spin text-4xl text-orange-500 mb-4"></i>
+          <p className="text-gray-600">Loading orders...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <i className="fas fa-exclamation-triangle text-4xl text-red-500 mb-4"></i>
+          <p className="text-gray-600">Error loading orders: {error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -82,8 +119,8 @@ const Orders = () => {
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h3 className="text-lg font-bold text-gray-900">{order.orderId}</h3>
-                  <p className="text-sm text-gray-500">{order.date}</p>
+          <h3 className="text-lg font-bold text-gray-900">{order.order_number}</h3>
+          <p className="text-sm text-gray-500">{new Date(order.created_at).toLocaleDateString()}</p>
                 </div>
                 <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(order.status)}`}>
                   {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
@@ -92,19 +129,19 @@ const Orders = () => {
 
               <div className="space-y-3">
                 <div>
-                  <p className="font-semibold text-gray-900">{order.customer}</p>
-                  <p className="text-sm text-gray-500">{order.email}</p>
+                  <p className="font-semibold text-gray-900">{order.form_data?.contact?.firstName} {order.form_data?.contact?.lastName}</p>
+                  <p className="text-sm text-gray-500">{order.form_data?.contact?.email}</p>
                 </div>
                 
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-2xl font-bold text-gray-900">{order.amount}</p>
-                    <p className="text-sm text-gray-500">{order.items.length} items</p>
+                    <p className="text-2xl font-bold text-gray-900">${order.total}</p>
+                    <p className="text-sm text-gray-500">{order.items ? order.items.length : 0} items</p>
                   </div>
                 </div>
 
                 <div className="flex flex-wrap gap-1">
-                  {order.items.map((item, index) => (
+                  {order.items && order.items.map((item, index) => (
                     <span key={index} className="bg-orange-100 text-orange-800 px-2 py-1 rounded-lg text-xs font-medium">
                       {item}
                     </span>

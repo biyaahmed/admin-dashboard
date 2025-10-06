@@ -65,7 +65,7 @@ function App() {
               </ProtectedRoute>
             } 
           />
-          <Route path="/" element={<Navigate to="/dashboard" />} />
+          <Route path="/" element={<Navigate to={isAuthenticated() ? "/dashboard" : "/login"} />} />
         </Routes>
       </div>
     </Router>

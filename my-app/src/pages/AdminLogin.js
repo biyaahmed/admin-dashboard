@@ -1,6 +1,7 @@
 // pages/AdminLogin.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { adminLogin } from '../api';
 
 const AdminLogin = () => {
   const [formData, setFormData] = useState({
@@ -10,6 +11,14 @@ const AdminLogin = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  // Check if user is already authenticated
+  useEffect(() => {
+    const token = localStorage.getItem('adminToken');
+    if (token) {
+      navigate('/dashboard');
+    }
+  }, [navigate]);
 
   const handleChange = (e) => {
     setFormData({
@@ -24,41 +33,11 @@ const AdminLogin = () => {
     setError('');
 
     try {
-      // For testing purposes, you can use mock credentials if your backend isn't ready
-      // Remove this block when your actual backend is working
-      if (formData.email === 'admin@example.com' && formData.password === 'password') {
-        const mockData = {
-          token: 'mock-jwt-token',
-          admin: {
-            name: 'Admin User',
-            email: 'admin@example.com'
-          }
-        };
-        localStorage.setItem('adminToken', mockData.token);
-        localStorage.setItem('adminData', JSON.stringify(mockData.admin));
-        navigate('/dashboard');
-        return;
-      }
+      const data = await adminLogin(formData.email, formData.password);
 
-      const response = await fetch('https://ordersbackend.breadsquared.com/api/admin/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      // Check if response is ok before trying to parse JSON
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      if (data.token && data.admin) {
+      if (data.token && data.user) {
         localStorage.setItem('adminToken', data.token);
-        localStorage.setItem('adminData', JSON.stringify(data.admin));
+        localStorage.setItem('adminData', JSON.stringify(data.user));
         navigate('/dashboard');
       } else {
         setError(data.message || 'Login failed - invalid response');
@@ -153,17 +132,7 @@ const AdminLogin = () => {
                 />
               </div>
 
-              {/* Demo Credentials */}
-              <div className="bg-sky-50 border border-sky-200 rounded-xl p-4">
-                <div className="flex items-center gap-2 text-sky-700 font-semibold mb-1 text-sm">
-                  <i className="fas fa-info-circle"></i>
-                  <span>Demo Credentials</span>
-                </div>
-                <div className="text-sky-800 text-sm leading-relaxed">
-                  <strong>Email:</strong> admin@example.com<br />
-                  <strong>Password:</strong> password
-                </div>
-              </div>
+
 
               {/* Submit Button */}
               <button

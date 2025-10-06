@@ -1,48 +1,78 @@
 // pages/AdminDashboard.js
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { getAdminStats, getAdminOrders } from '../api';
 
 const AdminDashboard = () => {
-  const stats = [
-    {
-      title: 'Total Orders',
-      value: '1,234',
-      change: '+12%',
-      trend: 'up',
-      icon: 'fas fa-shopping-cart',
-      color: 'bg-orange-500'
-    },
-    {
-      title: 'Revenue',
-      value: '$45,678',
-      change: '+8%',
-      trend: 'up',
-      icon: 'fas fa-dollar-sign',
-      color: 'bg-green-500'
-    },
-    {
-      title: 'Customers',
-      value: '892',
-      change: '+5%',
-      trend: 'up',
-      icon: 'fas fa-users',
-      color: 'bg-blue-500'
-    },
-    {
-      title: 'Pending Orders',
-      value: '23',
-      change: '-3%',
-      trend: 'down',
-      icon: 'fas fa-clock',
-      color: 'bg-amber-500'
-    }
-  ];
+  const navigate = useNavigate();
+  const [stats, setStats] = useState([]);
+  const [recentOrders, setRecentOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  const recentOrders = [
-    { id: '#ORD-001', customer: 'John Doe', amount: '$120.00', status: 'Completed', date: '2024-01-15' },
-    { id: '#ORD-002', customer: 'Jane Smith', amount: '$89.50', status: 'Processing', date: '2024-01-15' },
-    { id: '#ORD-003', customer: 'Mike Johnson', amount: '$245.75', status: 'Completed', date: '2024-01-14' },
-    { id: '#ORD-004', customer: 'Sarah Wilson', amount: '$67.25', status: 'Pending', date: '2024-01-14' }
-  ];
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
+
+        // Fetch stats
+        const statsData = await getAdminStats();
+        setStats([
+          {
+            title: 'Total Orders',
+            value: statsData.total_orders?.toLocaleString() || '0',
+            change: '+12%',
+            trend: 'up',
+            icon: 'fas fa-shopping-cart',
+            color: 'bg-orange-500'
+          },
+          {
+            title: 'Revenue',
+            value: `$${statsData.total_revenue?.toLocaleString() || '0'}`,
+            change: '+8%',
+            trend: 'up',
+            icon: 'fas fa-dollar-sign',
+            color: 'bg-green-500'
+          },
+          {
+            title: 'Customers',
+            value: statsData.total_customers?.toLocaleString() || '0',
+            change: '+5%',
+            trend: 'up',
+            icon: 'fas fa-users',
+            color: 'bg-blue-500'
+          },
+          {
+            title: 'Pending Orders',
+            value: statsData.pending_orders?.toString() || '0',
+            change: '-3%',
+            trend: 'down',
+            icon: 'fas fa-clock',
+            color: 'bg-amber-500'
+          }
+        ]);
+
+        // Fetch recent orders (limit to 4)
+        const ordersData = await getAdminOrders();
+        const recent = ordersData.data.slice(0, 4).map(order => ({
+          id: order.order_number,
+          customer: order.form_data.contact.firstName + ' ' + order.form_data.contact.lastName,
+          amount: `$${order.total}`,
+          status: order.status.charAt(0).toUpperCase() + order.status.slice(1),
+          date: new Date(order.created_at).toLocaleDateString()
+        }));
+        setRecentOrders(recent);
+
+      } catch (err) {
+        console.error('Dashboard data fetch error:', err);
+        setError('Failed to load dashboard data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -52,6 +82,28 @@ const AdminDashboard = () => {
       default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <i className="fas fa-spinner fa-spin text-4xl text-orange-500 mb-4"></i>
+          <p className="text-gray-600">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <i className="fas fa-exclamation-triangle text-4xl text-red-500 mb-4"></i>
+          <p className="text-gray-600">Error loading dashboard: {error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">

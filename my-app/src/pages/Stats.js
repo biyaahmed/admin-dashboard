@@ -1,50 +1,87 @@
 // pages/Stats.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { getAdminStats } from '../api';
 
 const Stats = () => {
   const [timeRange, setTimeRange] = useState('7d');
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  const metrics = [
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        setLoading(true);
+        const data = await getAdminStats();
+        setStats(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <i className="fas fa-spinner fa-spin text-4xl text-orange-500 mb-4"></i>
+          <p className="text-gray-600">Loading stats...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <i className="fas fa-exclamation-triangle text-4xl text-red-500 mb-4"></i>
+          <p className="text-gray-600">Error loading stats: {error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  const metrics = stats ? [
     {
       title: 'Total Revenue',
-      value: '$45,678',
-      change: '+8%',
-      trend: 'up',
+      value: `$${stats.totalRevenue || '0'}`,
+      change: stats.revenueChange || '+0%',
+      trend: stats.revenueTrend || 'up',
       icon: 'fas fa-dollar-sign',
       color: 'bg-green-500'
     },
     {
       title: 'Total Orders',
-      value: '1,234',
-      change: '+12%',
-      trend: 'up',
+      value: stats.totalOrders || '0',
+      change: stats.ordersChange || '+0%',
+      trend: stats.ordersTrend || 'up',
       icon: 'fas fa-shopping-cart',
       color: 'bg-orange-500'
     },
     {
       title: 'Customers',
-      value: '892',
-      change: '+5%',
-      trend: 'up',
+      value: stats.totalCustomers || '0',
+      change: stats.customersChange || '+0%',
+      trend: stats.customersTrend || 'up',
       icon: 'fas fa-users',
       color: 'bg-blue-500'
     },
     {
       title: 'Avg. Order Value',
-      value: '$45.67',
-      change: '+5.2%',
-      trend: 'up',
+      value: `$${stats.avgOrderValue || '0'}`,
+      change: stats.avgOrderChange || '+0%',
+      trend: stats.avgOrderTrend || 'up',
       icon: 'fas fa-chart-line',
       color: 'bg-purple-500'
     }
-  ];
+  ] : [];
 
-  const topProducts = [
-    { name: 'Artisan Sourdough', sales: 234, revenue: '$1,872' },
-    { name: 'Whole Wheat Baguette', sales: 189, revenue: '$1,228' },
-    { name: 'Cinnamon Roll', sales: 156, revenue: '$702' },
-    { name: 'Croissant', sales: 143, revenue: '$858' }
-  ];
+  const topProducts = stats?.topProducts || [];
 
   return (
     <div className="space-y-8">
