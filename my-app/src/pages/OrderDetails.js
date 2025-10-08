@@ -239,7 +239,7 @@ const OrderDetails = () => {
     { label: 'Order ID', value: order.order_number },
     { label: 'Date', value: order.created_at ? new Date(order.created_at).toLocaleDateString() : 'N/A' },
     { label: 'Payment Method', value: order.payment_method },
-    { label: 'Shipping Method', value: order.shipping_method },
+    // { label: 'Shipping Method', value: order.shipping_method },
     { label: 'Entity ID', value: order.form_data?.entityId },
     { label: 'Entity Name', value: order.form_data?.entityName },
     { label: 'State Key', value: order.form_data?.stateKey },
@@ -260,7 +260,7 @@ const OrderDetails = () => {
     <div className="space-y-8 p-6 max-w-7xl mx-auto">
       {/* Header */}
       <div className=" rounded-3xl  p-8 text-white" style={{backgroundColor:"#2e2163"}}>
-        <div className="flex items-center justify-between cta-mobile-flex">
+        <div className="flex  justify-between cta-mobile-flex">
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate('/orders')}

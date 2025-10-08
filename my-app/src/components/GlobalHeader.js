@@ -64,7 +64,7 @@ const GlobalHeader = () => {
           {/* Right side */}
           <div className="flex items-center gap-1">
             {/* Phone info */}
-            <div className="hidden lg:flex items-center gap-2 text-gray-600 px-4 py-2 rounded-full" style={{border:"1px solid #281d58", backgroundColor:"#ffffff", display:"none"}}>
+            <div className=" hidden lg:flex items-center gap-2 text-gray-600 px-4 py-2 rounded-full" style={{border:"1px solid #281d58", backgroundColor:"#ffffff", display:"none"}}>
               <i className="fas fa-phone text-sm" style={{color:"#281d58"}}></i>
               <span className="text-sm font-medium">+18172429273</span>
             </div>
@@ -110,7 +110,7 @@ const GlobalHeader = () => {
                     <p className="text-sm text-gray-500" style={{color:"#ffffff"}}>{admin.email}</p>
                   </div>
                   
-                  <div className="py-2">
+                  <div className="py-2 cta-phone-menu">
                     <button
                       onClick={() => {
                         navigate('/dashboard');

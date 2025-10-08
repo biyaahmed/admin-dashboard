@@ -189,7 +189,7 @@ const Orders = () => {
     <div className="space-y-8">
       {/* Header */}
       <div className="rounded-3xl shadow-lg p-8 text-white" style={{backgroundColor:"#2e2163"}}>
-        <div className="flex items-center justify-between cta-mobile-flex">
+        <div className="flex  justify-between cta-mobile-flex">
           <div style={{textAlign:"left"}}>
             <h1 className="text-2xl font-bold mb-2">Orders Management</h1>
             <p className=" text-lg">Manage and track all customer orders</p>
@@ -223,10 +223,12 @@ const Orders = () => {
             <button
               style={{border:"1px solid #2e2163"}}
               onClick={() => setShowDateDropdown(!showDateDropdown)}
-              className="px-4 py-3 border rounded-xl  transition-all duration-200 flex items-center gap-2 w-full md:w-auto"
+              className="px-4 py-3 border rounded-xl  transition-all duration-200 flex items-center justify-between gap-2 w-full md:w-auto"
             >
-              <i className="fas fa-calendar text-gray-600"></i>
+              <div style={{display:"flex", gap:"5px", alignItems:"center"}}>
+                <i className="fas fa-calendar text-gray-600"></i>
               <span>{getDateFilterText()}</span>
+              </div>
               <i className={`fas fa-chevron-down text-gray-600 transition-transform duration-200 ${showDateDropdown ? 'rotate-180' : ''}`}></i>
             </button>
             
@@ -316,15 +318,14 @@ const Orders = () => {
           </div>
 
         
-          <div className="relative inline-flex items-center">
+          <div className="relative inline-flex items-center" style={{border:"1px solid ##291e5a"}}>
               {/* Icon */}
               <i style={{fontSize:"20px"}} class="fa absolute left-3 text-gray-600 pointer-events-none">&#xf0ae;</i>
           {/* Dropdown */}
-              <select
-                  style={{ border: "1px solid #2e2163" }}
+              <select style={{ border: "1px solid #2e2163" }}
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="appearance-none pl-9 pr-8 py-3 border rounded-xl text-gray-700 transition-all duration-200 w-full md:w-auto cursor-pointer "
+                  className="appearance-none pl-9 pr-8 py-3  rounded-xl text-gray-700 w-full md:w-auto cursor-pointer border-blue"
   >
     <option value="all">All Status</option>
     <option value="pending">Pending</option>
@@ -346,9 +347,13 @@ const Orders = () => {
           <div key={order.id} className="bg-white rounded-2xl shadow-sm ">
             <div className="p-6">
               <div className="flex items-center justify-between mb-4" style={{textAlign:"left"}}>
-                <div>
-                  <h3 className="text-lg font-bold text-gray-900">{order.order_number}</h3>
+                {/* <div>
+                  <h3 className="text-lg font-bold text-gray-900" style={{display:"none"}}>{order.order_number}</h3>
                   <p className="text-sm text-gray-500">{new Date(order.created_at).toLocaleDateString()}</p>
+                </div> */}
+                <div>
+                  <p className="font-semibold text-gray-900">{order.form_data?.contact?.firstName} {order.form_data?.contact?.lastName}</p>
+                  <p className="text-sm text-gray-500">{order.form_data?.contact?.email}</p>
                 </div>
                 <span style={{backgroundColor:"#ffc729"}} className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(order.status)}`}>
                   {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
@@ -356,10 +361,10 @@ const Orders = () => {
               </div>
 
               <div className="space-y-3" style={{textAlign:"left"}}>
-                <div>
+                {/* <div>
                   <p className="font-semibold text-gray-900">{order.form_data?.contact?.firstName} {order.form_data?.contact?.lastName}</p>
                   <p className="text-sm text-gray-500">{order.form_data?.contact?.email}</p>
-                </div>
+                </div> */}
                 
                 <div className="flex items-center justify-between">
                   <div>
@@ -367,7 +372,7 @@ const Orders = () => {
                     <p className="text-sm text-gray-500">{order.items ? order.items.length : 0} items</p>
                   </div>
                 </div>
-
+                  <p className="text-sm text-gray-500">{new Date(order.created_at).toLocaleDateString()}</p>
                 <div className="flex flex-wrap gap-1">
                   {order.items && order.items.map((item, index) => (
                     <span key={index} className=" px-2 py-1 rounded-lg text-xs font-medium">

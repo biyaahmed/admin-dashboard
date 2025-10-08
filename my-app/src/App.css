@@ -96,3 +96,10 @@ code {
     font-size: 16px !important;
   }
 }
+
+select:focus{
+  border: 1px solid #2e2163 !important;
+}
+.cta-phone-menu{
+  display: none !important;
+}
