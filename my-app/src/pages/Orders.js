@@ -1,196 +1,3 @@
-// // pages/Orders.js
-// import React, { useState, useEffect } from 'react';
-// import { useNavigate } from 'react-router-dom';
-// import { getAdminOrders } from '../api';
-
-// const Orders = () => {
-//   const navigate = useNavigate();
-//   const [searchTerm, setSearchTerm] = useState('');
-//   const [statusFilter, setStatusFilter] = useState('all');
-//   const [orders, setOrders] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState('');
-
-//   const getStatusColor = (status) => {
-//     const colors = {
-//       completed: 'bg-green-100 text-green-800 border-green-200',
-//       processing: 'bg-blue-100 text-blue-800 border-blue-200',
-//       pending: 'bg-amber-100 text-amber-800 border-amber-200',
-//       cancelled: 'bg-red-100 text-red-800 border-red-200'
-//     };
-//     return colors[status] || 'bg-gray-100 text-gray-800 border-gray-200';
-//   };
-
-//   useEffect(() => {
-//     const fetchOrders = async () => {
-//       try {
-//         setLoading(true);
-//         const data = await getAdminOrders();
-//         setOrders(data.data); // Use data.data array from API response
-//       } catch (err) {
-//         setError(err.message);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchOrders();
-//   }, []);
-
-//   const filteredOrders = orders.filter(order => {
-//     const customerName = order.form_data?.contact?.firstName + ' ' + order.form_data?.contact?.lastName || '';
-//     const orderNumber = order.order_number || '';
-//     const matchesSearch = customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-//                          orderNumber.toLowerCase().includes(searchTerm.toLowerCase());
-//     const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
-//     return matchesSearch && matchesStatus;
-//   });
-
-//   if (loading) {
-//     return (
-//       <div className="flex items-center justify-center min-h-screen">
-//         <div className="text-center">
-//           <i className="fas fa-spinner fa-spin text-4xl mb-4" style={{color:"#2e2163"}}></i>
-//           <p className="text-gray-600">Loading orders...</p>
-//         </div>
-//       </div>
-//     );
-//   }
-
-//   if (error) {
-//     return (
-//       <div className="flex items-center justify-center min-h-screen">
-//         <div className="text-center">
-//           <i className="fas fa-exclamation-triangle text-4xl text-red-500 mb-4"></i>
-//           <p className="text-gray-600">Error loading orders: {error}</p>
-//         </div>
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <div className="space-y-8">
-//       {/* Header */}
-//       <div className="rounded-3xl shadow-lg p-8 text-white" style={{backgroundColor:"#2e2163"}}>
-//         <div className="flex items-center justify-between">
-//           <div>
-//             <h1 className="text-4xl font-bold mb-2">Orders Management</h1>
-//             <p className="text-orange-100 text-lg">Manage and track all customer orders</p>
-//           </div>
-//           <button className=" px-6 py-3 rounded-xl font-semibold " style={{backgroundColor:"#ffffff", color:"#2e2163"}} >
-//             <i className="fas fa-plus mr-2"></i>
-//             New Order
-//           </button>
-//         </div>
-//       </div>
-
-//       {/* Filters */}
-//       <div className="bg-white rounded-2xl shadow-sm ">
-//         <div className="flex flex-col md:flex-row gap-4">
-//           <div className="flex-1">
-//             <div className="relative">
-//               <i className="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-//               <input style={{border:"1px solid #2e2163"}}
-//                 type="text"
-//                 placeholder="Search orders..."
-//                 value={searchTerm}
-//                 onChange={(e) => setSearchTerm(e.target.value)}
-//                 className="w-full pl-10 pr-4 py-3 border  rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
-//               />
-//             </div>
-//           </div>
-//           <select style={{border:"1px solid #2e2163"}}
-//             value={statusFilter}
-//             onChange={(e) => setStatusFilter(e.target.value)}
-//             className="px-4 py-3 border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
-//           >
-//             <option value="all">All Status</option>
-//             <option value="pending">Pending</option>
-//             <option value="processing">Processing</option>
-//             <option value="completed">Completed</option>
-//           </select>
-//         </div>
-//       </div>
-
-//       {/* Orders Grid */}
-//       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-//         {filteredOrders.map((order) => (
-//           <div key={order.id} className="bg-white rounded-2xl shadow-sm ">
-//             <div className="p-6">
-//               <div className="flex items-center justify-between mb-4" style={{textAlign:"left"}}>
-//                 <div>
-//           <h3 className="text-lg font-bold text-gray-900">{order.order_number}</h3>
-//           <p className="text-sm text-gray-500">{new Date(order.created_at).toLocaleDateString()}</p>
-//                 </div>
-//                 <span style={{backgroundColor:"#ffc729"}} className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(order.status)}`}>
-//                   {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-//                 </span>
-//               </div>
-
-//               <div className="space-y-3" style={{textAlign:"left"}}>
-//                 <div>
-//                   <p className="font-semibold text-gray-900">{order.form_data?.contact?.firstName} {order.form_data?.contact?.lastName}</p>
-//                   <p className="text-sm text-gray-500">{order.form_data?.contact?.email}</p>
-//                 </div>
-                
-//                 <div className="flex items-center justify-between">
-//                   <div>
-//                     <p className="text-2xl font-bold text-gray-900">${order.total}</p>
-//                     <p className="text-sm text-gray-500">{order.items ? order.items.length : 0} items</p>
-//                   </div>
-//                 </div>
-
-//                 <div className="flex flex-wrap gap-1">
-//                   {order.items && order.items.map((item, index) => (
-//                     <span key={index} className="bg-orange-100 text-orange-800 px-2 py-1 rounded-lg text-xs font-medium">
-//                       {item}
-//                     </span>
-//                   ))}
-//                 </div>
-//               </div>
-
-//               <div className="mt-6 flex items-center justify-between">
-//                 <button style={{backgroundColor:"#2e2163"}}
-//                   onClick={() => navigate(`/orders/${order.id}`)}
-//                   className="text-white px-4 py-2 rounded-lg font-semibold flex items-center gap-2"
-//                 >
-//                   <i className="fas fa-eye"></i>
-//                   View Details
-//                 </button>
-//                 <div className="flex items-center gap-2">
-//                   <button className="p-2 text-gray-400 hover:text-orange-600 transition-colors duration-200">
-//                     <i className="fas fa-edit"></i>
-//                   </button>
-//                   <button className="p-2 text-gray-400 hover:text-red-600 transition-colors duration-200">
-//                     <i className="fas fa-trash"></i>
-//                   </button>
-//                 </div>
-//               </div>
-//             </div>
-//           </div>
-//         ))}
-//       </div>
-
-//       {filteredOrders.length === 0 && (
-//         <div className="bg-white rounded-2xl shadow-sm border border-orange-100 p-12 text-center">
-//           <i className="fas fa-search text-4xl text-gray-300 mb-4"></i>
-//           <h3 className="text-lg font-semibold text-gray-900 mb-2">No orders found</h3>
-//           <p className="text-gray-500">Try adjusting your search or filter criteria</p>
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default Orders;
-
-
-
-
-
-
-
-
 
 
 // pages/Orders.js
@@ -382,10 +189,10 @@ const Orders = () => {
     <div className="space-y-8">
       {/* Header */}
       <div className="rounded-3xl shadow-lg p-8 text-white" style={{backgroundColor:"#2e2163"}}>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between cta-mobile-flex">
           <div>
             <h1 className="text-4xl font-bold mb-2">Orders Management</h1>
-            <p className="text-orange-100 text-lg">Manage and track all customer orders</p>
+            <p className=" text-lg">Manage and track all customer orders</p>
           </div>
           <button className=" px-6 py-3 rounded-xl font-semibold " style={{backgroundColor:"#ffffff", color:"#2e2163"}} >
             <i className="fas fa-plus mr-2"></i>
@@ -395,7 +202,7 @@ const Orders = () => {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-2xl shadow-sm p-6">
+      <div className=" rounded-2xl shadow-sm ">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1">
             <div className="relative">
@@ -406,7 +213,7 @@ const Orders = () => {
                 placeholder="Search orders..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
+                className="w-full pl-10 pr-4 py-3 border rounded-xl  transition-all duration-200"
               />
             </div>
           </div>
@@ -416,7 +223,7 @@ const Orders = () => {
             <button
               style={{border:"1px solid #2e2163"}}
               onClick={() => setShowDateDropdown(!showDateDropdown)}
-              className="px-4 py-3 border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 flex items-center gap-2 w-full md:w-auto"
+              className="px-4 py-3 border rounded-xl  transition-all duration-200 flex items-center gap-2 w-full md:w-auto"
             >
               <i className="fas fa-calendar text-gray-600"></i>
               <span>{getDateFilterText()}</span>
@@ -430,8 +237,8 @@ const Orders = () => {
                     <button
                       key={option}
                       onClick={() => handleDateFilterSelect(option)}
-                      className={`w-full text-left px-4 py-2 rounded-lg hover:bg-orange-50 transition-colors duration-200 ${
-                        dateFilter === option ? 'bg-orange-100 text-orange-700' : 'text-gray-700'
+                      className={`w-full text-left px-4 py-2 rounded-lg  transition-colors duration-200 ${
+                        dateFilter === option ? ' text-700' : 'text-gray-700'
                       }`}
                     >
                       <div className="flex items-center gap-3">
@@ -455,8 +262,8 @@ const Orders = () => {
                   <div className="border-t border-gray-200 mt-2 pt-2">
                     <button
                       onClick={() => handleDateFilterSelect('custom')}
-                      className={`w-full text-left px-4 py-2 rounded-lg hover:bg-orange-50 transition-colors duration-200 ${
-                        dateFilter === 'custom' ? 'bg-orange-100 text-orange-700' : 'text-gray-700'
+                      className={`w-full text-left px-4 py-2 rounded-lg  transition-colors duration-200 ${
+                        dateFilter === 'custom' ? '' : 'text-gray-700'
                       }`}
                     >
                       <div className="flex items-center gap-3">
@@ -473,7 +280,7 @@ const Orders = () => {
                             type="date"
                             value={customStartDate}
                             onChange={(e) => setCustomStartDate(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg "
                           />
                         </div>
                         <div>
@@ -482,14 +289,14 @@ const Orders = () => {
                             type="date"
                             value={customEndDate}
                             onChange={(e) => setCustomEndDate(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 "
                           />
                         </div>
                         <div className="flex gap-2">
-                          <button
+                          <button style={{backgroundColor:"#291e5a"}}
                             onClick={applyCustomDate}
                             disabled={!customStartDate || !customEndDate}
-                            className="flex-1 bg-orange-500 text-white py-2 px-3 rounded-lg font-medium hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                            className="flex-1 text-white py-2 px-3 rounded-lg font-medium  disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
                           >
                             Apply
                           </button>
@@ -512,7 +319,7 @@ const Orders = () => {
             style={{border:"1px solid #2e2163"}}
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-3 border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
+            className="px-4 py-3 border rounded-xl transition-all duration-200"
           >
             <option value="all">All Status</option>
             <option value="pending">Pending</option>
@@ -552,7 +359,7 @@ const Orders = () => {
 
                 <div className="flex flex-wrap gap-1">
                   {order.items && order.items.map((item, index) => (
-                    <span key={index} className="bg-orange-100 text-orange-800 px-2 py-1 rounded-lg text-xs font-medium">
+                    <span key={index} className=" px-2 py-1 rounded-lg text-xs font-medium">
                       {item}
                     </span>
                   ))}
@@ -568,7 +375,7 @@ const Orders = () => {
                   View Details
                 </button>
                 <div className="flex items-center gap-2">
-                  <button className="p-2 text-gray-400 hover:text-orange-600 transition-colors duration-200">
+                  <button className="p-2 text-gray-400  transition-colors duration-200">
                     <i className="fas fa-edit"></i>
                   </button>
                   <button className="p-2 text-gray-400 hover:text-red-600 transition-colors duration-200">
@@ -582,7 +389,7 @@ const Orders = () => {
       </div>
 
       {filteredOrders.length === 0 && (
-        <div className="bg-white rounded-2xl shadow-sm border border-orange-100 p-12 text-center">
+        <div className="bg-white rounded-2xl shadow-sm border  p-12 text-center">
           <i className="fas fa-search text-4xl text-gray-300 mb-4"></i>
           <h3 className="text-lg font-semibold text-gray-900 mb-2">No orders found</h3>
           <p className="text-gray-500">Try adjusting your search or filter criteria</p>

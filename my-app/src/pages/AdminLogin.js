@@ -58,7 +58,7 @@ const AdminLogin = () => {
     <div className="min-h-screen bg-gradient-to-br from-indigo-500 to-purple-600 font-sans">
       <div className="min-h-screen flex flex-col">
         {/* Header */}
-        <div className="bg-purple-900 border-b border-white/20 py-4">
+        <div className=" border-b border-white/20 py-4" style={{backgroundColor:"#291d5b"}}>
           <div className="max-w-7xl mx-auto px-8 flex justify-between items-center">
             <img 
               src="https://www.breadsquared.com/wp-content/uploads/al_opt_content/IMAGE/www.breadsquared.com/wp-content/uploads/2025/08/Bread-Squared-300x40.png.bv.webp?bv_host=www.breadsquared.com" 
@@ -66,21 +66,21 @@ const AdminLogin = () => {
               className="h-8 w-auto"
             />
             <div className="flex items-center gap-2 text-white font-medium">
-              <i className="fas fa-phone text-purple-300"></i>
+              <i className="fas fa-phone" style={{color:"#ffffff"}}></i>
               <span>+18172429273</span>
             </div>
           </div>
         </div>
 
         {/* Login Content */}
-        <div className="flex-1 flex items-center justify-center p-8">
+        <div className="flex-1 flex items-center justify-center p-8" style={{backgroundImage:"url('https://www.breadsquared.com/wp-content/uploads/2025/08/Hero-Section-2.jpg')", backgroundPosition:"center", backgroundSize:"cover", backgroundRepeat:"no-repeat"}}>
           <div className="relative bg-white/95 backdrop-blur-xl rounded-2xl p-12 shadow-2xl border border-white/30 w-full max-w-md overflow-hidden">
             {/* Gradient Top Border */}
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-900 to-indigo-500"></div>
             
             {/* Header */}
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold bg-gradient-to-br from-purple-900 to-indigo-500 bg-clip-text text-transparent mb-2">
+              <h2 className="text-3xl font-bold bg-gradient-to-br from-purple-900 to-indigo-500 bg-clip-text text-transparent mb-2" style={{color:"#000000"}}>
                 Admin Portal
               </h2>
               <p className="text-gray-600 text-base font-normal">
@@ -100,7 +100,7 @@ const AdminLogin = () => {
 
               {/* Email Input */}
               <div>
-                <label htmlFor="email" className="block text-purple-900 text-sm font-semibold mb-2">
+                <label htmlFor="email" className="block text-purple-900 text-sm font-semibold mb-2" style={{color:"#000000"}}>
                   Email Address *
                 </label>
                 <input
@@ -117,7 +117,7 @@ const AdminLogin = () => {
 
               {/* Password Input */}
               <div>
-                <label htmlFor="password" className="block text-purple-900 text-sm font-semibold mb-2">
+                <label htmlFor="password" className="block text-purple-900 text-sm font-semibold mb-2" style={{color:"#000000"}}>
                   Password *
                 </label>
                 <input
@@ -135,7 +135,7 @@ const AdminLogin = () => {
 
 
               {/* Submit Button */}
-              <button
+              <button style={{backgroundColor:"#ffc729"}}
                 type="submit"
                 disabled={loading}
                 className="w-full bg-gradient-to-br from-purple-900 to-indigo-500 text-white border-none py-4 px-8 rounded-xl text-base font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-2 relative overflow-hidden hover:translate-y-[-2px] hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none disabled:hover:shadow-none"
