@@ -43,7 +43,32 @@ const GlobalHeader = () => {
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex space-x-1">
+            {/* <nav className="hidden md:flex space-x-1">
+              {navigation.map((item) => (
+                <button style={{backgroundColor:"#ffffff", color:"#2e2163"}}
+                  key={item.name}
+                  onClick={() => navigate(item.href)}
+                  className={`${
+                    item.current
+                      ? ' text-white shadow-lg'
+                      : 'text-gray-700 hover:bg-orange-50 hover:text-white-700'
+                  } px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300 flex items-center gap-2`}
+                >
+                  <i className={`${item.icon} w-4 h-4`}></i>
+                  {item.name}
+                </button>
+              ))}
+            </nav> */}
+          </div>
+
+          {/* Right side */}
+          <div className="flex items-center gap-1">
+            {/* Phone info */}
+            <div className="hidden lg:flex items-center gap-2 text-gray-600 px-4 py-2 rounded-full" style={{border:"1px solid #281d58", backgroundColor:"#ffffff", display:"none"}}>
+              <i className="fas fa-phone text-sm" style={{color:"#281d58"}}></i>
+              <span className="text-sm font-medium">+18172429273</span>
+            </div>
+  <nav className="hidden md:flex space-x-1">
               {navigation.map((item) => (
                 <button style={{backgroundColor:"#ffffff", color:"#2e2163"}}
                   key={item.name}
@@ -59,38 +84,28 @@ const GlobalHeader = () => {
                 </button>
               ))}
             </nav>
-          </div>
-
-          {/* Right side */}
-          <div className="flex items-center gap-4">
-            {/* Phone info */}
-            <div className="hidden lg:flex items-center gap-2 text-gray-600 px-4 py-2 rounded-full" style={{border:"1px solid #281d58", backgroundColor:"#ffffff"}}>
-              <i className="fas fa-phone text-sm" style={{color:"#281d58"}}></i>
-              <span className="text-sm font-medium">+18172429273</span>
-            </div>
-
             {/* User dropdown */}
             <div className="relative">
-                <img style={{marginLeft:"-8px"}}
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="flex items-center gap-2 bg-white rounded-xl px-5 py-3 " style={{border:"1px solid #271c54", justifyContent:"space-around"}}
+              >
+                <i style={{fontSize:"20px", color:"#281d58"}} class='fas'>&#xf2bd;</i>
+                {/* <img style={{marginLeft:"-8px"}}
                   className="h-7 w-7 rounded-full"
                   src={admin.avatar}
                   alt={admin.name}
-                />
-              <button
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="flex items-center gap-2 bg-white rounded-2xl px-5 py-3 " style={{border:"1px solid #271c54", justifyContent:"space-around"}}
-              >
-              
+                /> */}
                 <div className="hidden lg:block text-left">
-                  <p className="text-sm font-semibold text-gray-900">{admin.name}</p>
-                  <p className="text-xs text-gray-500">{admin.email}</p>
+                  {/* <p className="text-sm font-semibold text-gray-900">{admin.name}</p> */}
+                  <p className="text-xs text-gray-500" style={{color:"#281d58", fontSize:"14px"}}>{admin.email}</p>
                 </div>
                 <i className="fas fa-chevron-down text-xs" style={{color:"#271c54", fontSize:"16px"}}></i>
               </button>
 
               {isDropdownOpen && (
                 <div className="absolute right-0 mt-3 w-64 bg-white rounded-xl shadow-2xl border  z-50">
-                  <div className="px-4 py-3 border-b rounded-t-xl" style={{backgroundColor:"#271c54", paddingTop:"10px"}}>
+                  <div className="px-4 py-3 border-b rounded-t-xl" style={{backgroundColor:"#271c54", paddingTop:"10px", textAlign:"left"}}>
                     <p className="text-sm font-semibold text-gray-900" style={{color:"#ffffff"}}>{admin.name}</p>
                     <p className="text-sm text-gray-500" style={{color:"#ffffff"}}>{admin.email}</p>
                   </div>
