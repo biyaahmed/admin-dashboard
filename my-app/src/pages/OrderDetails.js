@@ -268,12 +268,12 @@ const OrderDetails = () => {
             >
               <i className="fas fa-arrow-left text-xl"></i>
             </button>
-            <div>
-              <h1 className="text-4xl font-bold mb-2">Order Details</h1>
+            <div style={{textAlign:"left"}}>
+              <h1 className="text-2xl font-bold mb-2">Order Details</h1>
               <p className=" text-lg">Order {order.order_number || order.id}</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3" style={{display:"none"}}>
             <button className="bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-xl font-semibold hover:bg-white/30 transition-colors duration-200">
               <i className="fas fa-print mr-2"></i>
               Print
@@ -374,7 +374,7 @@ const OrderDetails = () => {
             <h2 className="text-xl font-bold text-gray-900 mb-4">Customer Information</h2>
             <div className="space-y-3" style={{textAlign:"left"}}>
               <div className="flex items-center gap-3">
-                <div className=" p-2 rounded-lg" style={{backgroundColor:"#281d57"}}>
+                <div className=" p-2 rounded-lg" style={{backgroundColor:"#281d57", padding:"8px 13px"}}>
                   <i className="fas fa-user " style={{color:"#ffffff"}}></i>
                 </div>
                 <div>
@@ -383,13 +383,13 @@ const OrderDetails = () => {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <div className=" p-2 rounded-lg" style={{backgroundColor:"#281d57"}}>
+                <div className=" p-2 rounded-lg" style={{backgroundColor:"#281d57", padding:"8px 12px"}}>
                   <i className="fas fa-phone " style={{color:"#ffffff"}}></i>
                 </div>
                 <p className="text-sm text-gray-600">{order.form_data?.contact?.phone}</p>
               </div>
               <div className="flex items-center gap-3">
-                <div className="-100 p-2 rounded-lg" style={{backgroundColor:"#281d57"}}>
+                <div className="-100 p-2 rounded-lg" style={{backgroundColor:"#281d57", padding:"8px 14px"}}>
                   <i className="fas fa-map-marker-alt " style={{color:"#ffffff"}}></i>
                 </div>
                 <div>

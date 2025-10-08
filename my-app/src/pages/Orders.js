@@ -190,11 +190,11 @@ const Orders = () => {
       {/* Header */}
       <div className="rounded-3xl shadow-lg p-8 text-white" style={{backgroundColor:"#2e2163"}}>
         <div className="flex items-center justify-between cta-mobile-flex">
-          <div>
-            <h1 className="text-4xl font-bold mb-2">Orders Management</h1>
+          <div style={{textAlign:"left"}}>
+            <h1 className="text-2xl font-bold mb-2">Orders Management</h1>
             <p className=" text-lg">Manage and track all customer orders</p>
           </div>
-          <button className=" px-6 py-3 rounded-xl font-semibold " style={{backgroundColor:"#ffffff", color:"#2e2163"}} >
+          <button className=" px-6 py-3 rounded-xl font-semibold " style={{backgroundColor:"#ffffff", color:"#2e2163", display:"none"}} >
             <i className="fas fa-plus mr-2"></i>
             New Order
           </button>
@@ -315,17 +315,28 @@ const Orders = () => {
             )}
           </div>
 
-          <select 
-            style={{border:"1px solid #2e2163"}}
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-3 border rounded-xl transition-all duration-200"
-          >
-            <option value="all">All Status</option>
-            <option value="pending">Pending</option>
-            <option value="processing">Processing</option>
-            <option value="completed">Completed</option>
-          </select>
+        
+          <div className="relative inline-flex items-center">
+              {/* Icon */}
+              <i style={{fontSize:"20px"}} class="fa absolute left-3 text-gray-600 pointer-events-none">&#xf0ae;</i>
+          {/* Dropdown */}
+              <select
+                  style={{ border: "1px solid #2e2163" }}
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="appearance-none pl-9 pr-8 py-3 border rounded-xl text-gray-700 transition-all duration-200 w-full md:w-auto cursor-pointer "
+  >
+    <option value="all">All Status</option>
+    <option value="pending">Pending</option>
+    <option value="processing">Processing</option>
+    <option value="completed">Completed</option>
+  </select>
+
+  {/* Dropdown arrow */}
+  <i className="fas fa-chevron-down absolute right-3 text-gray-600 pointer-events-none"></i>
+</div>
+
+
         </div>
       </div>
 
@@ -374,7 +385,7 @@ const Orders = () => {
                   <i className="fas fa-eye"></i>
                   View Details
                 </button>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2" style={{display:"none"}}>
                   <button className="p-2 text-gray-400  transition-colors duration-200">
                     <i className="fas fa-edit"></i>
                   </button>
