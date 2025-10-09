@@ -242,82 +242,104 @@ const Orders = () => {
           )}
         </div>
 
-        {/* Orders List */}
-        <div className="space-y-4">
-          {loading && (
-            <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-              <p className="mt-4 text-gray-600">Loading orders...</p>
-            </div>
-          )}
+        {/* Orders Grid */}
+        {loading && (
+          <div className="text-center py-8">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Loading orders...</p>
+          </div>
+        )}
 
-          {error && (
-            <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-center">
-              <p className="text-red-700">{error}</p>
-            </div>
-          )}
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-center">
+            <p className="text-red-700">{error}</p>
+          </div>
+        )}
 
-          {!loading && !error && filteredOrders.length === 0 && (
-            <div className="bg-white rounded-2xl shadow-sm p-8 text-center">
-              <i className="fas fa-search text-gray-400 text-4xl mb-4"></i>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No orders found</h3>
-              <p className="text-gray-600">Try adjusting your search or filters</p>
-            </div>
-          )}
+        {!loading && !error && filteredOrders.length === 0 && (
+          <div className="bg-white rounded-2xl shadow-sm p-8 text-center">
+            <i className="fas fa-search text-gray-400 text-4xl mb-4"></i>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No orders found</h3>
+            <p className="text-gray-600">Try adjusting your search or filters</p>
+          </div>
+        )}
 
-          {!loading && !error && filteredOrders.map((order) => {
-            const paymentStatus = order.status || 'pending';
-            const workflowStatus = order.order_status || 'pending';
+        {!loading && !error && filteredOrders.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredOrders.map((order) => {
+              const paymentStatus = order.status || 'pending';
+              const workflowStatus = order.order_status || 'pending';
 
-            return (
-              <div key={order.id} className="bg-white rounded-2xl shadow-sm">
-                <div className="p-6">
-                  <div className="flex items-center justify-between mb-4" style={{textAlign:"left"}}>
-                    <div>
-                      <p className="font-semibold text-gray-900">
-                        {order.form_data?.contact?.firstName} {order.form_data?.contact?.lastName}
-                      </p>
-                      <p className="text-sm text-gray-500">{order.form_data?.contact?.email}</p>
+              return (
+                <div key={order.id} className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 overflow-hidden">
+                  <div className="p-5">
+                    {/* Customer Info */}
+                    <div className="mb-4 text-center">
+                      <h3 className="font-semibold text-gray-900 text-lg">{order.form_data?.contact?.firstName} {order.form_data?.contact?.lastName}</h3>
+                      <p className="text-sm text-gray-500 truncate">{order.form_data?.contact?.email}</p>
                     </div>
-                    <div className="flex flex-col gap-1 items-end">
+
+                    {/* Order Number */}
+                    <div className="mb-2 text-left text-sm text-gray-600 space-x-1">
+                      {/* <span className="font-medium text-gray-500">Order ID:</span>
+                      <span className="font-semibold text-gray-900">{order.order_number}</span> */}
+                    </div>
+
+                    {/* Order Date */}
+                    <div className="mb-1 text-left text-sm text-gray-600">
+                      <span className="font-medium text-gray-500">Date:</span>{' '}
+                      <span className="font-semibold text-gray-900">{new Date(order.created_at).toLocaleDateString()}</span>
+                    </div>
+
+                    {/* Total Amount Label */}
+                    {/* <div className="mb-1 text-left text-xs text-gray-500 font-medium">Total Amount</div> */}
+
+                    {/* Amount and Payment Status Labels */}
+                    <div className="mb-1 flex items-center gap-4 text-left pt-[5px]">
+                      <div className="text-sm font-medium text-gray-500 pt-[3px]">Amount:</div>
+                      <div className="text-xl font-bold text-gray-900">${order.total}</div>
+                    </div>
+                    <div className="mb-1 flex items-center gap-4 text-left pt-[5px]">
+                      <div className="text-sm font-medium text-gray-500">Amount Status:</div>
+                      <div className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border-2 ${
+                        paymentStatus === 'paid' ? 'bg-green-100 text-green-800 border-green-300' :
+                        'bg-amber-100 text-amber-800 border-amber-300'
+                      }`}>
+                        {paymentStatus.charAt(0).toUpperCase() + paymentStatus.slice(1)}
+                      </div>
+                    </div>
+
+                    {/* Workflow Status Label */}
+                    {/* <div className="mb-1 text-left text-xs text-gray-500 font-medium">Workflow Status</div> */}
+
+                    {/* Workflow Status */}
+                    <div className="mb-4 text-left">
+                      <span className="text-sm font-medium text-gray-500">Status:</span>{' '}
                       <span
-                        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${getPaymentStatusColor(paymentStatus)}`}
+                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border-2 ${
+                          workflowStatus === 'complete' ? 'bg-green-100 text-green-800 border-green-300' :
+                          workflowStatus === 'processing' ? 'bg-blue-100 text-blue-800 border-blue-300' :
+                          workflowStatus === 'cancelled' ? 'bg-red-100 text-red-800 border-red-300' :
+                          'bg-amber-100 text-amber-800 border-amber-300'
+                        }`}
                       >
-                        Payment: {paymentStatus.charAt(0).toUpperCase() + paymentStatus.slice(1)}
-                      </span>
-                      <span
-                        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${getWorkflowStatusColor(workflowStatus)}`}
-                      >
-                        Workflow: {workflowStatus.charAt(0).toUpperCase() + workflowStatus.slice(1)}
+                        {workflowStatus.charAt(0).toUpperCase() + workflowStatus.slice(1)}
                       </span>
                     </div>
-                  </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
-                    <div>
-                      <span className="font-medium">Order #:</span> {order.order_number}
-                    </div>
-                    <div>
-                      <span className="font-medium">Amount:</span> ${order.total}
-                    </div>
-                    <div>
-                      <span className="font-medium">Date:</span> {new Date(order.created_at).toLocaleDateString()}
-                    </div>
-                  </div>
-
-                  <div className="mt-4 flex justify-end">
+                    {/* View Details Button */}
                     <button
                       onClick={() => navigate(`/orders/${order.id}`)}
-                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                      className="w-full px-4 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 text-sm font-medium shadow-sm hover:shadow-md"
                     >
                       View Details
                     </button>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
