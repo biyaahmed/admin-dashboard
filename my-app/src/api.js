@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://ordersbackend.breadsquared.com/api';
+const API_BASE_URL = 'http://127.0.0.1:8000/api';
 
 // Helper function to get auth headers
 const getAuthHeaders = () => {
@@ -90,7 +90,23 @@ export const getOrderDetails = async (orderId) => {
   return data;
 };
 
+export const updateOrderStatus = async (orderId, status) => {
+  const response = await fetch(`${API_BASE_URL}/admin/orders/${orderId}/status`, {
+    method: 'PUT',
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ order_status: status }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to update order status: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data;
+};
+
 export const getAdminStats = async () => {
+
   const response = await fetch(`${API_BASE_URL}/admin/stats`, {
     method: 'GET',
     headers: getAuthHeaders(),

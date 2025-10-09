@@ -1,7 +1,7 @@
 // pages/OrderDetails.js
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getOrderDetails } from '../api';
+import { getOrderDetails, updateOrderStatus } from '../api';
 
 const OrderDetails = () => {
   const { id } = useParams();
@@ -9,6 +9,8 @@ const OrderDetails = () => {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [updatingStatus, setUpdatingStatus] = useState(false);
+  const [statusMessage, setStatusMessage] = useState('');
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
@@ -27,6 +29,26 @@ const OrderDetails = () => {
       fetchOrderDetails();
     }
   }, [id]);
+
+  const handleStatusUpdate = async (newStatus) => {
+    try {
+      setUpdatingStatus(true);
+      setStatusMessage('');
+      await updateOrderStatus(id, newStatus);
+
+      setOrder(prevOrder => ({
+        ...prevOrder,
+        order_status: newStatus
+      }));
+
+      setStatusMessage('Status updated successfully!');
+      setTimeout(() => setStatusMessage(''), 3000);
+    } catch (err) {
+      setStatusMessage(`Error updating status: ${err.message}`);
+    } finally {
+      setUpdatingStatus(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -236,8 +258,9 @@ const OrderDetails = () => {
   const orderInfoData = [
     { label: 'Order ID', value: order.order_number },
     { label: 'Date', value: order.created_at ? new Date(order.created_at).toLocaleDateString() : 'N/A' },
+    { label: 'Payment Status', value: order.status === 'paid' ? 'Paid' : 'Pending' },
+    { label: 'Workflow Status', value: order.order_status ? order.order_status.charAt(0).toUpperCase() + order.order_status.slice(1) : 'Pending' },
     { label: 'Payment Method', value: order.payment_method },
-    // { label: 'Shipping Method', value: order.shipping_method },
     { label: 'Entity ID', value: order.form_data?.entityId },
     { label: 'Entity Name', value: order.form_data?.entityName },
     { label: 'State Key', value: order.form_data?.stateKey },
@@ -271,17 +294,74 @@ const OrderDetails = () => {
               <p className=" text-lg">Order {order.order_number || order.id}</p>
             </div>
           </div>
-          <div className="flex items-center gap-3" style={{display:"none"}}>
-            <button className="bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-xl font-semibold hover:bg-white/30 transition-colors duration-200">
-              <i className="fas fa-print mr-2"></i>
-              Print
-            </button>
-            <button className=" text-600 px-4 py-2 rounded-xl font-semibold" style={{backgroundColor:"#ffffff", color:"#2e2163"}}>
-              <i className="fas fa-edit mr-2"></i>
-              Edit Order
-            </button>
+          <div className="flex items-center gap-3">
+            {/* Status Display and Edit */}
+            <div className="flex items-center gap-4">
+              {/* Payment Status Badge */}
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium">Payment:</span>
+                <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                  order.status === 'paid'
+                    ? 'bg-green-100 text-green-800'
+                    : 'bg-yellow-100 text-yellow-800'
+                }`}>
+                  {order.status === 'paid' ? 'Paid' : 'Pending'}
+                </span>
+              </div>
+
+              {/* Workflow Status Badge and Dropdown */}
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium">Workflow:</span>
+                <div className="relative">
+                  <select
+                    value={order.order_status || 'pending'}
+                    onChange={(e) => handleStatusUpdate(e.target.value)}
+                    disabled={updatingStatus}
+                    className={`px-3 py-1 rounded-full text-sm font-semibold border-0 appearance-none cursor-pointer ${
+                      order.order_status === 'complete'
+                        ? 'bg-green-100 text-green-800'
+                        : order.order_status === 'processing'
+                          ? 'bg-blue-100 text-blue-800'
+                          : order.order_status === 'cancelled'
+                            ? 'bg-red-100 text-red-800'
+                            : 'bg-yellow-100 text-yellow-800'
+                    } ${updatingStatus ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
+                    <option value="pending">Pending</option>
+                    <option value="processing">Processing</option>
+                    <option value="complete">Complete</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select>
+                  {updatingStatus && (
+                    <i className="fas fa-spinner fa-spin absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3" style={{display:"none"}}>
+              <button className="bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-xl font-semibold hover:bg-white/30 transition-colors duration-200">
+                <i className="fas fa-print mr-2"></i>
+                Print
+              </button>
+              <button className=" text-600 px-4 py-2 rounded-xl font-semibold" style={{backgroundColor:"#ffffff", color:"#2e2163"}}>
+                <i className="fas fa-edit mr-2"></i>
+                Edit Order
+              </button>
+            </div>
           </div>
         </div>
+
+        {/* Status Message */}
+        {statusMessage && (
+          <div className={`mt-4 p-3 rounded-lg text-sm font-medium ${
+            statusMessage.includes('Error')
+              ? 'bg-red-100 text-red-800'
+              : 'bg-green-100 text-green-800'
+          }`}>
+            {statusMessage}
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
